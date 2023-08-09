@@ -1,0 +1,11 @@
+.pokedex-wrapper{
+    display: flex;
+    flex-direction: column;
+}
+
+.pokedex-wrapper h1{
+    margin: 10px auto;
+    font-size: 30px;
+    letter-spacing: 5px;
+    padding: 10px;
+}
