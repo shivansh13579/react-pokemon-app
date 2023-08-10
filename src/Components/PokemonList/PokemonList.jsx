@@ -8,13 +8,25 @@ function PokemonList(){
 
     const [pokemomList,setPokemonList] = useState([]);
     const [isLoading,setIsLoading] = useState(true);
-    async   function downloadPokemon(){
-        const response = await axios.get('https://pokeapi.co/api/v2/pokemon');
-        const pokemonResults = response.data.results;
+    
+    const POKEDEC_URL = 'https://pokeapi.co/api/v2/pokemon';
+
+    async function downloadPokemon(){
+       
+        const response = await axios.get(POKEDEC_URL); //this download the 20 pokemon
+
+        const pokemonResults = response.data.results; //we get the array of pokemon from result
+        console.log(response.data);
+
+        //iterating over the array of pokemon,and using url to create the array of pokemon
+        //that will download the 20 pokemon
        const pokemonResultData = pokemonResults.map((pokemon)=>axios.get(pokemon.url));
-       const pokemonData = await axios.all(pokemonResultData);
+     
+       //passing that promise array to axios.all
+       const pokemonData = await axios.all(pokemonResultData);//array of 20 pokemon detailed data
        console.log(pokemonData); 
-       const res = (pokemonData.map((pokeData)=>{
+       //now iterate on the data of each pokemon
+       const pokeListResult = (pokemonData.map((pokeData)=>{
         const pokemons = pokeData.data;
         return {
             id : pokemons.id,
@@ -23,8 +35,8 @@ function PokemonList(){
             type :pokemons.types}
 
        }));
-       console.log(res);
-       setPokemonList(res);
+       console.log(pokeListResult);
+       setPokemonList(pokeListResult);
         setIsLoading(false);
     }
 
@@ -33,10 +45,17 @@ function PokemonList(){
     },[]);
     return(
         <div className="pokemon-list-wrapper">
-            <div>Pokemon List</div>
+            
+            <div className="pokemon-wrapper">
             {(isLoading) ?' loading...' : 
             pokemomList.map((p)=><Pokemon name={p.name} image={p.image} key={p.id}/>)
             }
+            </div>
+            <div className="controls">
+                <button>Prev</button>
+                <button>next</button>
+            </div>
+           
         </div>
     )
 }
